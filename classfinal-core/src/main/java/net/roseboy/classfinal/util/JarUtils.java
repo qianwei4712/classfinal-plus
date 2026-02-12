@@ -123,7 +123,7 @@ public class JarUtils {
                 entry = (ZipEntry) entries.nextElement();
                 if (entry.isDirectory()) {
                     targetFile = new File(target, entry.getName());
-                    if(!targetFile.exists()){
+                    if (!targetFile.exists()) {
                         targetFile.mkdirs();
                     }
                 } else {//有时候entries没有目录,根据文件路径创建目录
@@ -238,11 +238,15 @@ public class JarUtils {
         } catch (UnsupportedEncodingException e) {
         }
 
-        if (path.startsWith("jar:") || path.startsWith("war:")) {
-            path = path.substring(4);
-        }
-        if (path.startsWith("file:")) {
-            path = path.substring(5);
+        while (path.startsWith("jar:") || path.startsWith("war:") || path.startsWith("nested:")
+                || path.startsWith("file:")) {
+            if (path.startsWith("jar:") || path.startsWith("war:")) {
+                path = path.substring(4);
+            } else if (path.startsWith("nested:")) {
+                path = path.substring(7);
+            } else if (path.startsWith("file:")) {
+                path = path.substring(5);
+            }
         }
 
         //没解压的war包
